@@ -35,6 +35,22 @@ var y = d3.scale.linear()
         .domain([0, 70])
         .range([h, 0]);
 
+// Colors for genera
+// Source: http://jnnnnn.blogspot.com.au/2015/10/selecting-different-colours-for.html
+var col = d3.scale.ordinal()
+        .domain(["Dipodomys", "Chaetodipus", "Onychomys", "Reithrodontomys",
+                  "Peromyscus", "Perognathus", "Neotoma", "Ammospermophilus",
+                  "Amphispiza", "Spermophilus", "Sigmodon", "Sylvilagus",
+                  "Pipilo", "Campylorhynchus", "Baiomys", "Callipepla",
+                  "Calamospiza", "Rodent", "Pooecetes", "Sceloporus", "Lizard",
+                  "Sparrow", "Ammodramus", "Cnemidophorus", "Crotalus",
+                 "Zonotrichia"])
+        .range(["#a0cb76", "#6aa3d5", "#dcaf98", "#b6692e", "#a76a59",
+        "#04908e", "#d771ab", "#a69683", "#8268d0", "#72ab79", "#f70c8b",
+        "#ebaa4c", "#9ce7b8", "#5f837a", "#df708c", "#ad9c32", "#39ffc2",
+        "#d28388", "#79d5f9", "#e35eff", "#ffaf72", "#55e0b3", "#e8c0fe",
+        "#6a69ed", "#fe07d3", "#0c86af"]);
+
 // Function to draw the visualization
 function drawVis(data) {
     var circles = svg.selectAll("circle")
@@ -43,9 +59,9 @@ function drawVis(data) {
             .append("circle")
             .attr("cx", function(d) { return x(d.weight);  })
             .attr("cy", function(d) { return y(d.hindfoot_length);  })
-            .attr("r", 4)
-            .style("stroke", "black")
-            .style("opacity", 0.5);
+            .attr("r", 5)
+            .style("fill", function(d) { return col(d.genus); })
+            .style("stroke", function(d) {return col(d.genus); });
 }
 
 
