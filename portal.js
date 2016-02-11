@@ -51,6 +51,11 @@ var col = d3.scale.ordinal()
         "#d28388", "#79d5f9", "#e35eff", "#ffaf72", "#55e0b3", "#e8c0fe",
         "#6a69ed", "#fe07d3", "#0c86af"]);
 
+// Tooltips for points
+var tooltip = d3.select("body").append("div") .attr("class", "tooltip")
+        .style("opacity", 0);
+
+
 // Function to draw the visualization
 function drawVis(data) {
     var circles = svg.selectAll("circle")
@@ -61,7 +66,22 @@ function drawVis(data) {
             .attr("cy", function(d) { return y(d.hindfoot_length);  })
             .attr("r", 5)
             .style("fill", function(d) { return col(d.genus); })
-            .style("stroke", function(d) {return col(d.genus); });
+            .style("stroke", function(d) {return col(d.genus); })
+            .on("mouseover", function(d) { tooltip.transition()
+                                           .duration(50)
+                                           .style("opacity", .9);
+                                           tooltip.html(d.genus + " " + d.species
+                                                        + "<br>Date: " + d.year
+                                                        + "-" + d.month + "-" +
+                                                        d.day + "<br>Plot type: " +
+                                                        d.plot_type)
+                                           .style("left", (d3.event.pageX + 14)
+                                                  + "px")
+                                           .style("top", (d3.event.pageY - 28)
+                                                  + "px"); })
+            .on("mouseout", function(d) { tooltip.transition()
+                                          .duration(500)
+                                          .style("opacity", 0);});
 }
 
 
