@@ -7,10 +7,23 @@ d3.csv("portal_combined.csv", function(error, portal) {
         d.month = +d.month;
         d.day = +d.day;
         d.year = +d.year;
-        d.hindfoot_length = +d.hindfoot_length;
-        d.weight = +d.weight;
     });
-    dataset=portal;
+    // Filter out rows with NAs in hindfoot length or width
+    portal = portal.filter(function(d){
+        if(isNaN(d.hindfoot_length)){
+            return false;
+        }
+        d.hindfoot_length = parseFloat(d.hindfoot_length);
+        return true;
+    });
+    portal = portal.filter(function(d){
+        if(isNaN(d.weight)){
+            return false;
+        }
+        d.weight = parseFloat(d.weight);
+        return true;
+    });
+    dataset = portal;
     drawVis(dataset);
 });
 
@@ -59,7 +72,25 @@ var tooltip = d3.select("body").append("div") .attr("class", "tooltip")
 // Function to draw the visualization
 function drawVis(data) {
     var circles = svg.selectAll("circle")
-            .data(data)
+            .data(data
+                  // Filter out NAs...again...I thought they were already gone
+                  // but for some reason they still appear unless I run filter
+                  // both when I load the data and also here. So...that seems
+                  // weird but ok.
+                  .filter(function(d){
+                      if(isNaN(d.weight)){
+                          return false;
+                      }
+                      d.weight = parseFloat(d.weight);
+                      return true;
+                  })
+                  .filter(function(d){
+                      if(isNaN(d.hindfoot_length)){
+                          return false;
+                      }
+                      d.hindfoot_length = parseFloat(d.hindfoot_length);
+                      return true;
+                  }))
             .enter()
             .append("circle")
             .attr("cx", function(d) { return x(d.weight);  })
