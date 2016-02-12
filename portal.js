@@ -138,5 +138,16 @@ d3.csv("portal_combined.csv", function(error, data) {
         .on("mouseout", function(d) { tooltip.transition()
                                       .duration(500)
                                       .style("opacity", 0);});
+
+    
+    // Filter data by sex based on checkboxes
+    d3.selectAll(".filter_button").on("change", function() {
+        var selected = this.value,
+            display = this.checked ? "inline" : "none";
+
+        svg.selectAll(".dot")
+            .filter(function(d) { return selected == d.sex; })
+            .attr("display", display);
+    });
 });
 
