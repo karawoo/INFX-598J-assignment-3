@@ -1,31 +1,3 @@
-// Load data
-var dataset;
-d3.csv("portal_combined.csv", function(error, portal) {
-    //read in the data
-    if (error) return console.warn(error);
-    portal.forEach(function(d) { // Following columns should be numeric
-        d.month = +d.month;
-        d.day = +d.day;
-        d.year = +d.year;
-    });
-    // Filter out rows with NAs in hindfoot length or width
-    portal = portal.filter(function(d){
-        if(isNaN(d.hindfoot_length)){
-            return false;
-        }
-        d.hindfoot_length = parseFloat(d.hindfoot_length);
-        return true;
-    });
-    portal = portal.filter(function(d){
-        if(isNaN(d.weight)){
-            return false;
-        }
-        d.weight = parseFloat(d.weight);
-        return true;
-    });
-    dataset = portal;
-    drawVis(dataset);
-});
 
 // Set width/height/margins
 var margin = {top: 20, right: 20, bottom: 30, left: 50};
@@ -48,6 +20,17 @@ var y = d3.scale.linear()
         .domain([0, 70])
         .range([h, 0]);
 
+// Draw x axis
+var xAxis = d3.svg.axis()
+        .ticks(6)
+        .scale(x);
+
+// Draw y axis
+var yAxis = d3.svg.axis()
+        .ticks(7)
+        .scale(y)
+        .orient("left");
+   
 // Colors for genera
 // Source: http://jnnnnn.blogspot.com.au/2015/10/selecting-different-colours-for.html
 var col = d3.scale.ordinal()
@@ -68,83 +51,92 @@ var col = d3.scale.ordinal()
 var tooltip = d3.select("body").append("div") .attr("class", "tooltip")
         .style("opacity", 0);
 
+// Load data
+var dataset;
+d3.csv("portal_combined.csv", function(error, data) {
+    //read in the data
+    if (error) return console.warn(error);
+    data.forEach(function(d) { // Following columns should be numeric
+        d.month = +d.month;
+        d.day = +d.day;
+        d.year = +d.year;
+    });
+    // Filter out rows with NAs in hindfoot length and weight
+    data.filter(function(d){
+        if(isNaN(d.hindfoot_length)){
+            return false;
+        }
+        d.hindfoot_length = parseFloat(d.hindfoot_length);
+        return true;
+    });
+    data.filter(function(d){
+        if(isNaN(d.weight)){
+            return false;
+        }
+        d.weight = parseFloat(d.weight);
+        return true;
+    });
 
-// Function to draw the visualization
-function drawVis(data) {
-    var circles = svg.selectAll("circle")
-            .data(data
-                  // Filter out NAs...again...I thought they were already gone
-                  // but for some reason they still appear unless I run filter
-                  // both when I load the data and also here. So...that seems
-                  // weird but ok.
-                  .filter(function(d){
-                      if(isNaN(d.weight)){
-                          return false;
-                      }
-                      d.weight = parseFloat(d.weight);
-                      return true;
-                  })
-                  .filter(function(d){
-                      if(isNaN(d.hindfoot_length)){
-                          return false;
-                      }
-                      d.hindfoot_length = parseFloat(d.hindfoot_length);
-                      return true;
-                  }))
-            .enter()
-            .append("circle")
-            .attr("cx", function(d) { return x(d.weight);  })
-            .attr("cy", function(d) { return y(d.hindfoot_length);  })
-            .attr("r", 5)
-            .style("fill", function(d) { return col(d.genus); })
-            .style("stroke", function(d) {return col(d.genus); })
-            .on("mouseover", function(d) { tooltip.transition()
-                                           .duration(50)
-                                           .style("opacity", .9);
-                                           tooltip.html(d.genus + " " + d.species
-                                                        + "<br>Date: " + d.year
-                                                        + "-" + d.month + "-" +
-                                                        d.day + "<br>Plot type: " +
-                                                        d.plot_type)
-                                           .style("left", (d3.event.pageX + 14)
-                                                  + "px")
-                                           .style("top", (d3.event.pageY - 28)
-                                                  + "px"); })
-            .on("mouseout", function(d) { tooltip.transition()
-                                          .duration(500)
-                                          .style("opacity", 0);});
-}
+    // Add x axis label ("Weight")
+    svg.append("g")
+        .attr("class", "axis")
+        .attr("transform", "translate(0," + h + ")")
+        .call(xAxis)
+        .append("text")
+        .attr("x", w)
+        .attr("y", -6)
+        .style("text-anchor", "end")
+        .text("Weight");
 
+    // Add y axis label ("Hindfoot length")
+    svg.append("g")
+        .attr("class", "axis")
+        .call(yAxis)
+        .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("dy", ".71em")
+        .style("text-anchor", "end")
+        .text("Hindfoot Length");
 
-// Draw x axis
-var xAxis = d3.svg.axis()
-        .ticks(6)
-        .scale(x);
+    svg.selectAll(".dot")
+        .data(data
+              .filter(function(d){
+                  if(isNaN(d.hindfoot_length)){
+                      return false;
+                  }
+                  d.hindfoot_length = parseFloat(d.hindfoot_length);
+                  return true;
+              })
+              .filter(function(d){
+                  if(isNaN(d.weight)){
+                      return false;
+                  }
+                  d.weight = parseFloat(d.weight);
+                  return true;
+              }))
+        .enter()
+        .append("circle")
+        .attr("class", "dot")
+        .attr("cx", function(d) { return x(d.weight);  })
+        .attr("cy", function(d) { return y(d.hindfoot_length);  })
+        .attr("r", 5)
+        .style("fill", function(d) { return col(d.genus); })
+        .style("stroke", function(d) {return col(d.genus); })
+        .on("mouseover", function(d) { tooltip.transition()
+                                       .duration(50)
+                                       .style("opacity", .9);
+                                       tooltip.html(d.genus + " " + d.species
+                                                    + "<br>Date: " + d.year
+                                                    + "-" + d.month + "-" +
+                                                    d.day + "<br>Plot type: " +
+                                                    d.plot_type)
+                                       .style("left", (d3.event.pageX + 14)
+                                              + "px")
+                                       .style("top", (d3.event.pageY - 28)
+                                              + "px"); })
+        .on("mouseout", function(d) { tooltip.transition()
+                                      .duration(500)
+                                      .style("opacity", 0);});
+});
 
-// Add x axis label ("Weight")
-svg.append("g")
-    .attr("class", "axis")
-    .attr("transform", "translate(0," + h + ")")
-    .call(xAxis)
-    .append("text")
-    .attr("x", w)
-    .attr("y", -6)
-    .style("text-anchor", "end")
-    .text("Weight");
-
-// Draw y axis
-var yAxis = d3.svg.axis()
-        .ticks(7)
-        .scale(y)
-        .orient("left");
-
-// Add y axis label ("Hindfoot length")
-svg.append("g")
-    .attr("class", "axis")
-    .call(yAxis)
-    .append("text")
-    .attr("transform", "rotate(-90)")
-    .attr("y", 6)
-    .attr("dy", ".71em")
-    .style("text-anchor", "end")
-    .text("Hindfoot Length");
