@@ -149,5 +149,14 @@ d3.csv("portal_combined.csv", function(error, data) {
             .filter(function(d) { return selected == d.sex; })
             .attr("display", display);
     });
+
+    d3.selectAll(".plot_button").on("change", function() {
+        var selected = this.value,
+            display = this.checked ? "inline" : "none";
+
+        svg.selectAll(".dot")
+            .filter(function(d) { return selected == d.plot_type; })
+            .attr("display", display);
+    });
 });
 
