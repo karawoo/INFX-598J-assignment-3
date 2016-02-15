@@ -225,6 +225,9 @@ function drawVis() {
         }
     }
 
+    // Run update() once, otherwise slider won't appear until a checkbox is clicked
+    update();
+    
     // update every time a checkbox changes
     d3.selectAll(".filter_options input").on("change", function() {
         update();
