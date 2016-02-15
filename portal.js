@@ -15,14 +15,14 @@ var svg = d3.select("body").append("svg")
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-// Create invisible rect for mouse tracking
-svg.append("rect")
-    .attr("width", w)
-    .attr("height", h)                                    
-    .attr("x", 0) 
-    .attr("y", 0)
-    .attr("id", "mouse-tracker")
-    .style("fill", "white"); 
+// Create invisible rect for mouse tracking in the main plot
+// svg.append("rect")
+//     .attr("width", w)
+//     .attr("height", h)                                    
+//     .attr("x", 0) 
+//     .attr("y", 0)
+//     .attr("id", "mouse-tracker")
+//     .style("fill", "white"); 
 
 var context = svg.append("g") // Brushing context box container
         .attr("transform", "translate(" + 0 + "," + 410 + ")")
