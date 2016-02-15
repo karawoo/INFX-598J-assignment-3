@@ -76,11 +76,26 @@ d3.csv("portal_combined.csv", function(error, data) {
         d.weight = parseFloat(d.weight);
         return true;
     });
-
+    
+    // Create summary data set with average weight and hindfoot length by genus.
+    // This works but the data isn't accessible in the global namespace
+    
+    // var portal_avg = d3.nest()
+    //         .key(function(d) { return d.genus; })
+    //         .rollup(function(v) {
+    //             return {
+    //                 mean_weight: d3.mean(v, function(d) { return d.weight; }),
+    //                 mean_hindfoot_length: d3.mean(v, function(d) {
+    //                     return d.hindfoot_length; })
+    //             };
+    //         })
+    //         .entries(data);
+    
     portal = data;
     drawVis(portal);
-    
+
 });
+
 
 // Add x axis label ("Weight")
 svg.append("g")
