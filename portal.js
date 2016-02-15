@@ -1,8 +1,12 @@
 
 // Set width/height/margins
-var margin = {top: 20, right: 20, bottom: 30, left: 50};
-var w = 900 - margin.left - margin.right;
-var h = 500 - margin.top - margin.bottom;
+var margin = {top: 20, right: 200, bottom: 100, left: 50},
+    margin2 = { top: 430, right: 10, bottom: 20, left: 40 },
+    w = 960 - margin.left - margin.right,
+    h = 500 - margin.top - margin.bottom,
+    height2 = 500 - margin2.top - margin2.bottom;
+
+var parseDate = d3.time.format("%Y").parse;
 
 // Create SVG
 var svg = d3.select("body").append("svg")
@@ -11,10 +15,25 @@ var svg = d3.select("body").append("svg")
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+// Create invisible rect for mouse tracking
+svg.append("rect")
+    .attr("width", w)
+    .attr("height", h)                                    
+    .attr("x", 0) 
+    .attr("y", 0)
+    .attr("id", "mouse-tracker")
+    .style("fill", "white"); 
+
+var context = svg.append("g") // Brushing context box container
+        .attr("transform", "translate(" + 0 + "," + 410 + ")")
+        .attr("class", "context");
+
 // x and y scales 
 var x = d3.scale.linear()
         .domain([0, 300])
-        .range([0, w]);
+        .range([0, w]),
+    x2 = d3.time.scale()
+        .range([0, w]); // Duplicate xScale for brushing ref later
 
 var y = d3.scale.linear()
         .domain([0, 70])
@@ -23,7 +42,10 @@ var y = d3.scale.linear()
 // Draw x axis
 var xAxis = d3.svg.axis()
         .ticks(6)
-        .scale(x);
+        .scale(x),
+    xAxis2 = d3.svg.axis() // xAxis2 for brush slider
+        .scale(x2)
+        .orient("bottom");   
 
 // Draw y axis
 var yAxis = d3.svg.axis()
@@ -59,7 +81,7 @@ d3.csv("portal_combined.csv", function(error, data) {
     data.forEach(function(d) { // Following columns should be numeric
         d.month = +d.month;
         d.day = +d.day;
-        d.year = +d.year;
+        d.year = parseDate(d.year);
     });
     // Filter out rows with NAs in hindfoot length and weight
     data.filter(function(d){
@@ -99,6 +121,42 @@ d3.csv("portal_combined.csv", function(error, data) {
         .style("text-anchor", "end")
         .text("Hindfoot Length");
 
+    // X domain extent
+    x.domain(d3.extent(data, function(d) { return d.year; }));
+    x2.domain(x.domain()); // duplicate xdomain for brushing reference later
+
+ //for slider part---------------------------------------------------------------
+
+ var brush = d3.svg.brush()//for slider bar at the bottom
+    .x(x2) 
+    .on("brush", brushed);
+
+  context.append("g") // Create brushing xAxis
+      .attr("class", "x axis1")
+      .attr("transform", "translate(0," + height2 + ")")
+      .call(xAxis2);
+
+  var contextArea = d3.svg.area() // Set attributes for area chart in brushing context graph
+    .interpolate("monotone")
+    .x(function(d) { return x2(d.date); }) // x is scaled to xScale2
+    .y0(height2) // Bottom line begins at height2 (area chart not inverted) 
+    .y1(0); // Top line of area, 0 (area chart not inverted)
+
+  //plot the rect as the bar at the bottom
+  context.append("path") // Path is created using svg.area details
+    .attr("class", "area")
+    // .attr("d", contextArea(categories[0].values)) // pass first categories data .values to area path generator 
+    .attr("fill", "#F1F1F2");
+    
+  //append the brush for the selection of subsection  
+  context.append("g")
+    .attr("class", "x brush")
+    .call(brush)
+    .selectAll("rect")
+    .attr("height", height2) // Make brush rects same height 
+      .attr("fill", "#E6E7E8");  
+  //end slider part--------------------------------------------------------------
+    
     svg.selectAll(".dot")
         .data(data
               .filter(function(d){
@@ -170,6 +228,29 @@ d3.csv("portal_combined.csv", function(error, data) {
     d3.selectAll(".filter_options input").on("change", function() {
         update();
     });
+
+    function brushed() {
+
+        x.domain(brush.empty() ? x2.domain() : brush.extent()); // If brush is empty then reset the Xscale domain to default, if not then make it the brush extent 
+
+        svg.select(".x.axis") // replot xAxis with transition when brush used
+            .transition()
+            .call(xAxis);
+
+        // maxY = findMaxY(categories); // Find max Y rating value categories data with "visible"; true
+        // yScale.domain([0,maxY]); // Redefine yAxis domain based on highest y value of categories data with "visible"; true
+        
+        svg.select(".y.axis") // Redraw yAxis
+            .transition()
+            .call(yAxis);   
+
+        // issue.select("path") // Redraw lines based on brush xAxis scale and domain
+        //     .transition()
+        //     .attr("d", function(d){
+        //         return d.visible ? line(d.values) : null; // If d.visible is true then draw line for this d selection
+            // });
+        
+    }; 
     
 });
 
