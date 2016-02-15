@@ -30,29 +30,29 @@ var yAxis = d3.svg.axis()
         .ticks(7)
         .scale(y)
         .orient("left");
-   
+
 // Colors for genera
 // Source: http://jnnnnn.blogspot.com.au/2015/10/selecting-different-colours-for.html
 var col = d3.scale.ordinal()
         .domain(["Dipodomys", "Chaetodipus", "Onychomys", "Reithrodontomys",
-                  "Peromyscus", "Perognathus", "Neotoma", "Ammospermophilus",
-                  "Amphispiza", "Spermophilus", "Sigmodon", "Sylvilagus",
-                  "Pipilo", "Campylorhynchus", "Baiomys", "Callipepla",
-                  "Calamospiza", "Rodent", "Pooecetes", "Sceloporus", "Lizard",
-                  "Sparrow", "Ammodramus", "Cnemidophorus", "Crotalus",
+                 "Peromyscus", "Perognathus", "Neotoma", "Ammospermophilus",
+                 "Amphispiza", "Spermophilus", "Sigmodon", "Sylvilagus",
+                 "Pipilo", "Campylorhynchus", "Baiomys", "Callipepla",
+                 "Calamospiza", "Rodent", "Pooecetes", "Sceloporus", "Lizard",
+                 "Sparrow", "Ammodramus", "Cnemidophorus", "Crotalus",
                  "Zonotrichia"])
         .range(["#a0cb76", "#6aa3d5", "#dcaf98", "#b6692e", "#a76a59",
-        "#04908e", "#d771ab", "#a69683", "#8268d0", "#72ab79", "#f70c8b",
-        "#ebaa4c", "#9ce7b8", "#5f837a", "#df708c", "#ad9c32", "#39ffc2",
-        "#d28388", "#79d5f9", "#e35eff", "#ffaf72", "#55e0b3", "#e8c0fe",
-        "#6a69ed", "#fe07d3", "#0c86af"]);
+                "#04908e", "#d771ab", "#a69683", "#8268d0", "#72ab79", "#f70c8b",
+                "#ebaa4c", "#9ce7b8", "#5f837a", "#df708c", "#ad9c32", "#39ffc2",
+                "#d28388", "#79d5f9", "#e35eff", "#ffaf72", "#55e0b3", "#e8c0fe",
+                "#6a69ed", "#fe07d3", "#0c86af"]);
 
 // Tooltips for points
 var tooltip = d3.select("body").append("div") .attr("class", "tooltip")
         .style("opacity", 0);
 
 // Load data
-var dataset;
+var portal;
 d3.csv("portal_combined.csv", function(error, data) {
     //read in the data
     if (error) return console.warn(error);
@@ -77,30 +77,36 @@ d3.csv("portal_combined.csv", function(error, data) {
         return true;
     });
 
-    // Add x axis label ("Weight")
-    svg.append("g")
-        .attr("class", "axis")
-        .attr("transform", "translate(0," + h + ")")
-        .call(xAxis)
-        .append("text")
-        .attr("x", w)
-        .attr("y", -6)
-        .style("text-anchor", "end")
-        .text("Weight");
+    portal = data;
+    drawVis(portal);
+    
+});
 
-    // Add y axis label ("Hindfoot length")
-    svg.append("g")
-        .attr("class", "axis")
-        .call(yAxis)
-        .append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("y", 6)
-        .attr("dy", ".71em")
-        .style("text-anchor", "end")
-        .text("Hindfoot Length");
+// Add x axis label ("Weight")
+svg.append("g")
+    .attr("class", "axis")
+    .attr("transform", "translate(0," + h + ")")
+    .call(xAxis)
+    .append("text")
+    .attr("x", w)
+    .attr("y", -6)
+    .style("text-anchor", "end")
+    .text("Weight");
 
+// Add y axis label ("Hindfoot length")
+svg.append("g")
+    .attr("class", "axis")
+    .call(yAxis)
+    .append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("y", 6)
+    .attr("dy", ".71em")
+    .style("text-anchor", "end")
+    .text("Hindfoot Length");
+
+function drawVis() {
     svg.selectAll(".dot")
-        .data(data
+        .data(portal
               .filter(function(d){
                   if(isNaN(d.hindfoot_length)){
                       return false;
@@ -171,5 +177,4 @@ d3.csv("portal_combined.csv", function(error, data) {
         update();
     });
     
-});
-
+}
