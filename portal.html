@@ -46,6 +46,12 @@ circle {
   background: #ffffff;
 }
 
+.slider-range {
+    height: 15px;
+    width: 500px;
+    margin-left: 20px;
+}
+
   </style>
   
   <body>
@@ -81,5 +87,17 @@ circle {
                checked="checked">Spectab exclosure</input>
       </div>
     </p>
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="http://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
+    
+    <p>
+      <label for="yearamount">Year range:</label>
+      <input type="text" id="yearamount" readonly style="border:0; color:#f6931f; font-weight:bold;">
+    </p>
+
+    <div id="year" class="slider-range"></div>
+    
   </body>
 </html>

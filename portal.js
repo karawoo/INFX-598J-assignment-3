@@ -170,7 +170,7 @@ function drawVis() {
         var plottypes = d3.selectAll(".plot_button")[0]
                 .filter(function(e) { return e.checked; })
                 .map(function(e) { return e.value; });
-
+        
         // Helper function that will return correct display value for each dot
         function display(d) {
             // Check if the current dot"s sex and plot type are present in
@@ -191,5 +191,43 @@ function drawVis() {
     d3.selectAll(".filter_options input").on("change", function() {
         update();
     });
+
+    // Slider handler function
+    $(function() {
+        $( "#year" ).slider({
+            range: true,
+            min: 1977,
+            max: 2002,
+            values: [ 1977, 2002 ],
+            slide: function( event, ui ) {
+                $( "#yearamount" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+                filterData("year", ui.values); } });
+        $( "#yearamount" ).val( $( "#year" ).slider( "values", 0 ) +
+                                " - " + $( "#year" ).slider( "values", 1 ) ); });
+    
+    var attribute = ["year"];
+    var range = [1977, 2002];
+
+    function isInRange(datum){
+        for (i = 0; i < attribute.length; i++){
+            if (datum[attribute[i]] < range[i][0] || datum[attribute[i]] > range[i][1]){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    function filterData(attr, values){
+        for (i = 0; i < attribute.length; i++){
+            if (attr == attribute[i]){
+                range[i] = values;
+            }
+        }
+        var toVisualize = portal.filter(function(d) { return isInRange(d);});
+        drawVis(toVisualize);
+
+    }
+
     
 }
+
