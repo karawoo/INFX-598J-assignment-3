@@ -52,6 +52,7 @@ var tooltip = d3.select("body").append("div") .attr("class", "tooltip")
         .style("opacity", 0);
 
 // Load data
+var mytype;
 var portal;
 d3.csv("portal_combined.csv", function(error, data) {
     //read in the data
@@ -90,10 +91,87 @@ d3.csv("portal_combined.csv", function(error, data) {
     //             };
     //         })
     //         .entries(data);
-    
-    portal = data;
-    drawVis(portal);
 
+
+    // Slider handler function
+    $(function() {
+        $( "#year" ).slider({
+            range: true,
+            min: 1977,
+            max: 2002,
+            values: [ 1977, 2002 ],
+            slide: function( event, ui ) {
+                $( "#yearamount" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+                filterData("year", ui.values); } });
+        $( "#yearamount" ).val( $( "#year" ).slider( "values", 0 ) +
+                                " - " + $( "#year" ).slider( "values", 1 ) ); });
+
+    var attributes = ["year"];
+    var maxYear = 2002; // d3.max(portal, function(d) { return +d.year; });
+    var minYear = 1977; // d3.min(portal, function(d) { return +d.year; });
+    var ranges = [minYear, maxYear];
+
+    function filterData(attr, values){
+        for (var i = 0; i < attributes.length; i++){
+            if (attr == attributes[i]){
+                ranges[i] = values;
+            }
+        }
+        var ndata = []; //local variable for filtered data
+        if(mytype==="all"){ //if the type is all, just filter the quantiative variables based on ranges
+            data.forEach(function(d) {
+                for (i = 0; i < attributes.length; i++){
+                    if (d[attributes[i]] < ranges[i][0] || d[attributes[i]] > ranges[i][1]){
+                        return false;
+                    }
+                }
+                ndata.push(d);
+            });
+        }else{ //if the type is not all, filter the quantitative variables but continue to filter by the last selected type
+            data.forEach(function(d) {
+                for (i = 0; i < attributes.length; i++){
+                    if (d["type"] != mytype || d[attributes[i]] < ranges[i][0] || d[attributes[i]] > ranges[i][1]){
+                        return false;
+                    }
+                }
+                ndata.push(d);
+            });
+        }
+        drawVis(ndata);
+    }
+
+
+    function filterType(mtype) {
+        mytype=mtype; //set a global variable called mytype to track the last dropdown type selection
+        var ndata = [];
+        if(mytype==="all"){ //if type is all, take the original unfiltered data, and just filter by last selected slider range
+            data.forEach(function(d) {
+                for (var i = 0; i < attributes.length; i++){
+                    if (d[attributes[i]] < ranges[i][0] || d[attributes[i]] > ranges[i][1]){
+                        return false;
+                    }
+                }
+                ndata.push(d);
+            });
+        }else{ //if a certain type is selected, filter to only that type and use the attribute ranges
+            data.forEach(function(d) {
+                for (i = 0; i < attributes.length; i++){
+                    if (d["type"] != mytype || d[attributes[i]] < ranges[i][0] || d[attributes[i]] > ranges[i][1]){
+                        return false;
+                    }
+                }
+                ndata.push(d);
+            });
+        }
+        portal = ndata;
+        drawVis(ndata);
+    }
+
+    
+    // portal = data;
+    // drawVis(portal);
+
+   
 });
 
 
@@ -118,6 +196,8 @@ svg.append("g")
     .attr("dy", ".71em")
     .style("text-anchor", "end")
     .text("Hindfoot Length");
+
+
 
 function drawVis() {
     svg.selectAll(".dot")
@@ -162,80 +242,42 @@ function drawVis() {
 
     
     // Function to update data based on checkbox selections
-    function update() {
-        var sexes = d3.selectAll(".filter_button")[0]
-                .filter(function(e) { return e.checked; })
-                .map(function(e) { return e.value; });
+    // function update() {
+    //     var sexes = d3.selectAll(".filter_button")[0]
+    //             .filter(function(e) { return e.checked; })
+    //             .map(function(e) { return e.value; });
 
-        var plottypes = d3.selectAll(".plot_button")[0]
-                .filter(function(e) { return e.checked; })
-                .map(function(e) { return e.value; });
+    //     var plottypes = d3.selectAll(".plot_button")[0]
+    //             .filter(function(e) { return e.checked; })
+    //             .map(function(e) { return e.value; });
         
-        // Helper function that will return correct display value for each dot
-        function display(d) {
-            // Check if the current dot"s sex and plot type are present in
-            // `sexes` and `plottypes`
-            if (sexes.indexOf(d.sex) !== -1
-                && plottypes.indexOf(d.plot_type) !== -1) {
-                return "inline";
-            } else {
-                return "none";
-            }
-        }
+    //     // Helper function that will return correct display value for each dot
+    //     function display(d) {
+    //         // Check if the current dot"s sex and plot type are present in
+    //         // `sexes` and `plottypes`
+    //         if (sexes.indexOf(d.sex) !== -1
+    //             && plottypes.indexOf(d.plot_type) !== -1) {
+    //             return "inline";
+    //         } else {
+    //             return "none";
+    //         }
+    //     }
 
-        // change display attribute of every dot using display function
-        svg.selectAll(".dot").attr("display", display);
-
-        // Slider handler function
-        $(function() {
-            $( "#year" ).slider({
-                range: true,
-                min: 1977,
-                max: 2002,
-                values: [ 1977, 2002 ],
-                slide: function( event, ui ) {
-                    $( "#yearamount" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
-                    filterData("year", ui.values); } });
-            $( "#yearamount" ).val( $( "#year" ).slider( "values", 0 ) +
-                                    " - " + $( "#year" ).slider( "values", 1 ) ); });
-        
-        var attribute = ["year"];
-        var maxYear = d3.max(portal, function(d) { return +d.year; });
-        var minYear = d3.min(portal, function(d) { return +d.year; });
-        var range = [minYear, maxYear];
-
-        
-        function isInRange(datum){
-            for (i = 0; i < attribute.length; i++){
-                if (datum[attribute[i]] < range[i][0] || datum[attribute[i]] > range[i][1]){
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        function filterData(attr, values){
-            for (i = 0; i < attribute.length; i++){
-                if (attr == attribute[i]){
-                    range[i] = values;
-                }
-            }
-            var toVisualize = portal.filter(function(d) { return isInRange(d);});
-
-        }
-    }
-
+    //     // change display attribute of every dot using display function
+    //     svg.selectAll(".dot").attr("display", display);
+    // }
+    
     // Run update() once, otherwise slider won't appear until a checkbox is clicked
-    update();
+    // update();
     
     // update every time a checkbox changes
-    d3.selectAll(".filter_options input").on("change", function() {
-        update();
-    });
+    // d3.selectAll(".filter_options input").on("change", function() {
+    //     update();
+    // });
 
-    d3.selectAll(".slider-range input").on("change", function() {
-        update();
-    });
+    // d3.selectAll(".slider-range input").on("change", function() {
+    //     update();
+    // });
 
 }
 
