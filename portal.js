@@ -1,7 +1,7 @@
 
 // Set width/height/margins
 var margin = {top: 20, right: 200, bottom: 100, left: 50},
-    margin2 = { top: 430, right: 10, bottom: 20, left: 40 },
+    margin2 = {top: 430, right: 10, bottom: 20, left: 40},
     w = 960 - margin.left - margin.right,
     h = 500 - margin.top - margin.bottom,
     height2 = 500 - margin2.top - margin2.bottom;
@@ -124,37 +124,38 @@ d3.csv("portal_combined.csv", function(error, data) {
     // X domain extent
     x2.domain(d3.extent(data, function(d) { return d.year; }));
 
- //for slider part---------------------------------------------------------------
-
- var brush = d3.svg.brush()//for slider bar at the bottom
-    .x(x2) 
-    .on("brush", brushed);
-
-  context.append("g") // Create brushing xAxis
-      .attr("class", "x axis1")
-      .attr("transform", "translate(0," + height2 + ")")
-      .call(xAxis2);
-
-  var contextArea = d3.svg.area() // Set attributes for area chart in brushing context graph
-    .interpolate("monotone")
-    .x(function(d) { return x2(d.date); }) // x is scaled to xScale2
-    .y0(height2) // Bottom line begins at height2 (area chart not inverted) 
-    .y1(0); // Top line of area, 0 (area chart not inverted)
-
-  //plot the rect as the bar at the bottom
-  context.append("path") // Path is created using svg.area details
-    .attr("class", "area")
-    // .attr("d", contextArea(categories[0].values)) // pass first categories data .values to area path generator 
-    .attr("fill", "#F1F1F2");
+    // Create slider bar at bottom
     
-  //append the brush for the selection of subsection  
-  context.append("g")
-    .attr("class", "x brush")
-    .call(brush)
-    .selectAll("rect")
-    .attr("height", height2) // Make brush rects same height 
-      .attr("fill", "#E6E7E8");  
-  //end slider part--------------------------------------------------------------
+    var brush = d3.svg.brush()
+            .x(x2) 
+            .on("brush", brushed);
+
+    context.append("g") // Create brushing xAxis
+        .attr("class", "x axis1")
+        .attr("transform", "translate(0," + height2 + ")")
+        .call(xAxis2);
+
+    // Set attributes for area chart in brushing context graph
+    var contextArea = d3.svg.area()
+            .interpolate("monotone")
+            .x(function(d) { return x2(d.date); }) // x is scaled to x2
+            .y0(height2) // Bottom line begins at height2 (area chart not inverted) 
+            .y1(0); // Top line of area, 0 (area chart not inverted)
+
+    //plot the rect as the bar at the bottom
+    context.append("path") // Path is created using svg.area details
+        .attr("class", "area")
+    // .attr("d", contextArea(categories[0].values)) // pass first categories data .values to area path generator 
+        .attr("fill", "#F1F1F2");
+    
+    //append the brush for the selection of subsection  
+    context.append("g")
+        .attr("class", "x brush")
+        .call(brush)
+        .selectAll("rect")
+        .attr("height", height2) // Make brush rects same height 
+        .attr("fill", "#E6E7E8");  
+    //end slider part--------------------------------------------------------------
     
     svg.selectAll(".dot")
         .data(data
@@ -229,26 +230,20 @@ d3.csv("portal_combined.csv", function(error, data) {
     });
 
     function brushed() {
+        // If brush is empty then reset the Xscale domain to default, if not
+        // then make it the brush extent
+        x.domain(brush.empty() ? x2.domain() : brush.extent()); 
 
-        x.domain(brush.empty() ? x2.domain() : brush.extent()); // If brush is empty then reset the Xscale domain to default, if not then make it the brush extent 
-
-        svg.select(".x.axis") // replot xAxis with transition when brush used
+        // replot xAxis with transition when brush used
+        svg.select(".x.axis") 
             .transition()
             .call(xAxis);
 
-        // maxY = findMaxY(categories); // Find max Y rating value categories data with "visible"; true
-        // yScale.domain([0,maxY]); // Redefine yAxis domain based on highest y value of categories data with "visible"; true
-        
         svg.select(".y.axis") // Redraw yAxis
             .transition()
             .call(yAxis);   
 
-        // issue.select("path") // Redraw lines based on brush xAxis scale and domain
-        //     .transition()
-        //     .attr("d", function(d){
-        //         return d.visible ? line(d.values) : null; // If d.visible is true then draw line for this d selection
-            // });
-        
+
     }; 
     
 });
