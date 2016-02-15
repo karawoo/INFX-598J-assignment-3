@@ -140,23 +140,36 @@ d3.csv("portal_combined.csv", function(error, data) {
                                       .style("opacity", 0);});
 
     
-    // Filter data by sex based on checkboxes
-    d3.selectAll(".filter_button").on("change", function() {
-        var selected = this.value,
-            display = this.checked ? "inline" : "none";
+    // Function to update data based on checkbox selections
+    function update() {
+        var sexes = d3.selectAll(".filter_button")[0]
+                .filter(function(e) { return e.checked; })
+                .map(function(e) { return e.value; });
 
-        svg.selectAll(".dot")
-            .filter(function(d) { return selected == d.sex; })
-            .attr("display", display);
+        var plottypes = d3.selectAll(".plot_button")[0]
+                .filter(function(e) { return e.checked; })
+                .map(function(e) { return e.value; });
+
+        // Helper function that will return correct display value for each dot
+        function display(d) {
+            // Check if the current dot"s sex and plot type are present in
+            // `sexes` and `plottypes`
+            if (sexes.indexOf(d.sex) !== -1
+                && plottypes.indexOf(d.plot_type) !== -1) {
+                return "inline";
+            } else {
+                return "none";
+            }
+        }
+
+        // change display attribute of every dot using display function
+        svg.selectAll(".dot").attr("display", display);
+    }
+
+    // update every time a checkbox changes
+    d3.selectAll(".filter_options input").on("change", function() {
+        update();
     });
-
-    d3.selectAll(".plot_button").on("change", function() {
-        var selected = this.value,
-            display = this.checked ? "inline" : "none";
-
-        svg.selectAll(".dot")
-            .filter(function(d) { return selected == d.plot_type; })
-            .attr("display", display);
-    });
+    
 });
 
