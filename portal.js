@@ -122,8 +122,7 @@ d3.csv("portal_combined.csv", function(error, data) {
         .text("Hindfoot Length");
 
     // X domain extent
-    x.domain(d3.extent(data, function(d) { return d.year; }));
-    x2.domain(x.domain()); // duplicate xdomain for brushing reference later
+    x2.domain(d3.extent(data, function(d) { return d.year; }));
 
  //for slider part---------------------------------------------------------------
 
