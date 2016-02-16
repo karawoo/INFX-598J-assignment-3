@@ -180,8 +180,8 @@ d3.csv("portal_combined.csv", function(error, data) {
                 .filter(function(e) { return e.checked; })
                 .map(function(e) { return e.value; });
 
-        var plottypes = d3.selectAll(".plot_button")[0]
-                .filter(function(e) { return e.checked; })
+        var plottypes = d3.selectAll(".plot_menu")[0]
+                .filter(function(e) { return e.selected; })
                 .map(function(e) { return e.value; });
 
         // Helper function that will return correct display value for each dot

@@ -63,33 +63,30 @@ rect {
     <div id="scatter"></div>
     <script type="text/javascript" src="portal.js"></script>
     <div class="filter_options">
-    <p>
-      Sex:
+      <p>
+        Sex:
         <input class="filter_button" id="F" value="F" type="checkbox"
                checked="checked">F</input>
         <input class="filter_button" id="M" value="M" type="checkbox"
                checked="checked">M</input>
         <input class="filter_button" id="U" value="" type="checkbox"
                checked="checked">Unknown</input>
-    </p>
-    <p>
-      Plot type:<br>
-        <input class="plot_button" id="Control" value="Control"
-               type="checkbox" checked="checked">Control</input><br>
-        <input class="plot_button" id="Long-term Krat Exclosure"
-               value="Long-term Krat Exclosure" type="checkbox"
-               checked="checked">Long-term Krat Exclosure</input><br>
-        <input class="plot_button" id="Short-term Krat Exclosure"
-               value="Short-term Krat Exclosure" type="checkbox"
-               checked="checked">Short-term Krat Exclosure</input><br>
-        <input class="plot_button" id="Rodent Exclosure"
-               value="Rodent Exclosure" type="checkbox"
-               checked="checked">Rodent Exclosure</input><br>
-        <input class="plot_button" id="Spectab exclosure"
-               value="Spectab exclosure" type="checkbox"
-               checked="checked">Spectab exclosure</input>
-            </p>
-      </div>
+      </p>
+      <p>
+        Plot type:<br>
+        <select multiple name="Plot type" size = 5 >
+          <option class="plot_menu" selected value="Control"> Control </option>
+          <option class="plot_menu" selected value="Long-term Krat Exclosure">
+            Long-term Krat Exclosure </option>
+          <option class="plot_menu" selected value="Short-term Krat Exclosure" >
+            Short-term Krat Exclosure </option>
+          <option class="plot_menu" selected value="Rodent Exclosure" >
+            Rodent Exclosure </option>
+          <option class="plot_menu" selected value="Spectab exclosure" > Spectab
+            Exclosure </option>
+        </select><br>
+      </p>
+    </div>
 
   </body>
 </html>
