@@ -41,20 +41,6 @@ d3.csv("portal_combined.csv", function(error, data) {
         return true;
     });
     
-    // Create summary data set with average weight and hindfoot length by genus.
-    // This works but the data isn't accessible in the global namespace
-    
-    // var portal_avg = d3.nest()
-    //         .key(function(d) { return d.genus; })
-    //         .rollup(function(v) {
-    //             return {
-    //                 mean_weight: d3.mean(v, function(d) { return d.weight; }),
-    //                 mean_hindfoot_length: d3.mean(v, function(d) {
-    //                     return d.hindfoot_length; })
-    //             };
-    //         })
-    //         .entries(data);
-
     // Calculate maxima and minima and use these to set x/y domain
     var xMax = d3.max(data, function(d) { return d[xVar]; }),
         xMin = d3.min(data, function(d) { return d[xVar]; }),
