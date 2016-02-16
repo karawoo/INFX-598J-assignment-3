@@ -4,7 +4,18 @@
 
 Data for this project comes from the Portal Project Teaching Database:
 
-Ernest, Morgan; Brown, James; Valone, Thomas; White, Ethan P. (2015): Portal Project Teaching Database. figshare. https://dx.doi.org/10.6084/m9.figshare.1314459.v5
+Ernest, Morgan; Brown, James; Valone, Thomas; White, Ethan P. (2015): Portal
+Project Teaching Database. figshare.
+https://dx.doi.org/10.6084/m9.figshare.1314459.v5
+
+## Viewing
+
+The live visualization can be viewed at:
+http://karawoo.com/INFX-598J-assignment-3/portal.html
+
+Alternatively, download or clone this repository and run
+`python -m SimpleHTTPServer 8888` (on a Mac) from within this directory, then 
+open a browser and navigate to `http://localhost:8888/`.
 
 ## Assignment details
 
