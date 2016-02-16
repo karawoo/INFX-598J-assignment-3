@@ -201,7 +201,7 @@ d3.csv("portal_combined.csv", function(error, data) {
     }
 
     // Update every time a checkbox changes
-    d3.selectAll(".filter_options input").on("change", function() {
+    d3.selectAll(".filter_options").on("change", function() {
         update();
     });
 
