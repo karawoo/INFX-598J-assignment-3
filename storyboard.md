@@ -37,6 +37,6 @@ all the points from that genus.
 
 ## References
 
-Ernest, S. K. M., Brown, J.; Valone, T.; White, E. P. (2015). Portal Project Teaching Database. *figshare*. https://dx.doi.org/10.6084/m9.figshare.1314459.v5
+Ernest, S. K. M., Brown, J.; Valone, T.; White, E. P. (2015). Portal Project Teaching Database. *figshare*. [https://dx.doi.org/10.6084/m9.figshare.1314459.v5](https://dx.doi.org/10.6084/m9.figshare.1314459.v5)
 
-Ernest, S. K. M., Valone, T. J., & Brown, J. H. (2009). Long-term monitoring and experimental manipulation of a Chihuahuan Desert ecosystem near Portal, Arizona, USA. *Ecology, 90*(6), 1708–1708. http://doi.org/10.1890/08-1222.1
+Ernest, S. K. M., Valone, T. J., & Brown, J. H. (2009). Long-term monitoring and experimental manipulation of a Chihuahuan Desert ecosystem near Portal, Arizona, USA. *Ecology, 90*(6), 1708-1708. [http://doi.org/10.1890/08-1222.1](http://doi.org/10.1890/08-1222.1)
