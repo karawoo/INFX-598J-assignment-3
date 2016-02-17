@@ -153,6 +153,7 @@ d3.csv("portal_combined.csv", function(error, data) {
         .enter()
         .append("circle")
         .attr("class", "dot")
+        .attr("id", function(d) { return d.genus; } ) 
         .attr("r", 5)
         .attr("transform", transform)
         .style("fill", function(d) { return col(d.genus); })
@@ -173,6 +174,62 @@ d3.csv("portal_combined.csv", function(error, data) {
                                       .duration(500)
                                       .style("opacity", 0);});
 
+    
+
+    // Interactive legend
+    var legend = svg.selectAll(".legend")
+            .data(col.domain())
+            .enter()
+            .append("g")
+            .attr("class", "legend")
+            .attr("transform", function(d, i) {
+                return "translate(0," + i * 20 + ")";
+            });
+    
+    // Draw empty rectangles for legend boxes so borders will still show up when
+    // boxes are unselected
+    legend.append("rect")
+        .attr("x", w + 30)
+        .attr("width", 13)
+        .attr("height", 13)
+        .attr("border", 1)
+        .style("stroke", 'black')
+        .style("stroke-width", 1)
+        .style("fill", 'white')
+    ;
+
+    // Draw legend's colored rectangles
+    legend.append("rect")
+        .attr("class", "fade_rectangle" )
+        .attr("id" , function(d) { return d; } ) 
+        .attr("x", w + 30)
+        .attr("width", 13)
+        .attr("height", 13)
+        .style("fill", col)
+        .style("stroke", 'black')
+        .style("stroke-width", 1)
+        .style("opacity", 1)
+    // When a legend box is clicked, change the opacity of the legend and
+    // associated points
+        .on("click", function (d, i) {
+            var opac = this.style.opacity;
+            filterGenus(d, opac);
+        });
+
+    // Add legend text
+    legend.append("text")
+        .attr("x", w + 50)
+        .attr("y", 9)
+        .attr("dy", ".35em")
+        .text(function(d) { return d;});
+
+    // Filter points by changing opacity to zero
+    function filterGenus(id, opac) {
+        var newOpac = 1 - opac ;
+        // Toggle opacity of the points (and legend box)
+        d3.selectAll("#" + id)
+            .style("opacity", newOpac);    
+    }
     
     // Function to update data based on checkbox selections
     function update() {
