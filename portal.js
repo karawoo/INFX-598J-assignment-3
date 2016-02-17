@@ -1,7 +1,7 @@
 
 // Set width/height/margins
-var margin = {top: 20, right: 20, bottom: 30, left: 50};
-var w = 900 - margin.left - margin.right;
+var margin = {top: 20, right: 190, bottom: 30, left: 50};
+var w = 1000 - margin.left - margin.right;
 var h = 500 - margin.top - margin.bottom;
 
 // x and y scales 
@@ -189,20 +189,19 @@ d3.csv("portal_combined.csv", function(error, data) {
     // Draw empty rectangles for legend boxes so borders will still show up when
     // boxes are unselected
     legend.append("rect")
-        .attr("x", w + 30)
-        .attr("width", 13)
+        .attr("x", w + 10)
+        .attr("width", 13 )
         .attr("height", 13)
         .attr("border", 1)
         .style("stroke", 'black')
         .style("stroke-width", 1)
-        .style("fill", 'white')
-    ;
+        .style("fill", 'white');
 
     // Draw legend's colored rectangles
     legend.append("rect")
-        .attr("class", "fade_rectangle" )
+        .attr("class", "fade_rectangle" ) 
+        .attr("x", w + 10)
         .attr("id" , function(d) { return d; } ) 
-        .attr("x", w + 30)
         .attr("width", 13)
         .attr("height", 13)
         .style("fill", col)
@@ -218,7 +217,7 @@ d3.csv("portal_combined.csv", function(error, data) {
 
     // Add legend text
     legend.append("text")
-        .attr("x", w + 50)
+        .attr("x", w + 30)
         .attr("y", 9)
         .attr("dy", ".35em")
         .text(function(d) { return d;});
