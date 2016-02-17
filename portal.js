@@ -153,6 +153,7 @@ d3.csv("portal_NAs_removed.csv", function(error, data) {
     // boxes are unselected
     legend.append("rect")
         .attr("x", w + 10)
+        .attr("y", 15)
         .attr("width", 13 )
         .attr("height", 13)
         .attr("border", 1)
@@ -164,6 +165,7 @@ d3.csv("portal_NAs_removed.csv", function(error, data) {
     legend.append("rect")
         .attr("class", "fade_rectangle" ) 
         .attr("x", w + 10)
+        .attr("y", 15)
         .attr("id" , function(d) { return d; } ) 
         .attr("width", 13)
         .attr("height", 13)
@@ -181,10 +183,18 @@ d3.csv("portal_NAs_removed.csv", function(error, data) {
     // Add legend text
     legend.append("text")
         .attr("x", w + 30)
-        .attr("y", 9)
-        .attr("dy", ".35em")
+        .attr("y", 17)
+        .attr("dy", ".55em")
         .text(function(d) { return d;});
 
+    var legendTitle = d3.select(legend.node().parentNode);
+    legendTitle
+        .append("text")
+        .attr("y", 0)
+        .attr("x", w + 5)
+        .text("Genus (click box to toggle)");
+        
+    
     // Filter points by changing opacity to zero
     function filterGenus(id, opac) {
         var newOpac = 1 - opac ;
