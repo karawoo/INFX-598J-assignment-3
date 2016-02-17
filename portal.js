@@ -1,8 +1,8 @@
 
 // Set width/height/margins
 var margin = {top: 20, right: 190, bottom: 30, left: 50};
-var w = 1000 - margin.left - margin.right;
-var h = 500 - margin.top - margin.bottom;
+var w = 1100 - margin.left - margin.right;
+var h = 600 - margin.top - margin.bottom;
 
 // x and y scales 
 var x = d3.scale.linear()
