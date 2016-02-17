@@ -8,6 +8,13 @@ Ernest, Morgan; Brown, James; Valone, Thomas; White, Ethan P. (2015): Portal
 Project Teaching Database. figshare.
 https://dx.doi.org/10.6084/m9.figshare.1314459.v5
 
+The original data (named `portal_combined.csv` in this repository) has been
+filtered (using `portal.R` )to remove rows where weight or hindfoot length
+measurements were missing. This significantly reduced the number of species
+present in the data; many of the species that occurred were very rare and always
+had missing data. The filtered data (`portal_NAs_removed.csv`) is what gets used
+in the visualization.
+
 ## Viewing
 
 The live visualization can be viewed at:

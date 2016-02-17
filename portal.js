@@ -17,28 +17,15 @@ var xVar = "weight",
     yVar = "hindfoot_length";
 
 // Load data
-d3.csv("portal_combined.csv", function(error, data) {
+d3.csv("portal_NAs_removed.csv", function(error, data) {
     // Read in the data
     if (error) return console.warn(error);
     data.forEach(function(d) { // Following columns should be numeric
         d.month = +d.month;
         d.day = +d.day;
         d.year = +d.year;
-    });
-    // Filter out rows with NAs in hindfoot length and weight
-    data.filter(function(d){
-        if(isNaN(d.hindfoot_length)){
-            return false;
-        }
-        d.hindfoot_length = parseFloat(d.hindfoot_length);
-        return true;
-    });
-    data.filter(function(d){
-        if(isNaN(d.weight)){
-            return false;
-        }
-        d.weight = parseFloat(d.weight);
-        return true;
+        d.weight = +d.weight;
+        d.hindfoot_length = +d.hindfoot_length;
     });
     
     // Calculate maxima and minima and use these to set x/y domain
@@ -63,20 +50,10 @@ d3.csv("portal_combined.csv", function(error, data) {
 
     // Colors for genera
     // Source: http://jnnnnn.blogspot.com.au/2015/10/selecting-different-colours-for.html
-    var col = d3.scale.ordinal()
+    var col = d3.scale.category10()
             .domain(["Dipodomys", "Chaetodipus", "Onychomys", "Reithrodontomys",
-                     "Peromyscus", "Perognathus", "Neotoma", "Ammospermophilus",
-                     "Amphispiza", "Spermophilus", "Sigmodon", "Sylvilagus",
-                     "Pipilo", "Campylorhynchus", "Baiomys", "Callipepla",
-                     "Calamospiza", "Rodent", "Pooecetes", "Sceloporus", "Lizard",
-                     "Sparrow", "Ammodramus", "Cnemidophorus", "Crotalus",
-                     "Zonotrichia"])
-            .range(["#a0cb76", "#6aa3d5", "#dcaf98", "#b6692e", "#a76a59",
-                    "#04908e", "#d771ab", "#a69683", "#8268d0", "#72ab79",
-                    "#f70c8b", "#ebaa4c", "#9ce7b8", "#5f837a", "#df708c",
-                    "#ad9c32", "#39ffc2", "#d28388", "#79d5f9", "#e35eff",
-                    "#ffaf72", "#55e0b3", "#e8c0fe", "#6a69ed", "#fe07d3",
-                    "#0c86af"]);
+                      "Peromyscus", "Perognathus", "Neotoma", "Sigmodon",
+                      "Baiomys"]);
 
     // Tooltips for points
     var tooltip = d3.select("body").append("div") .attr("class", "tooltip")
@@ -135,21 +112,7 @@ d3.csv("portal_combined.csv", function(error, data) {
 
     // Plot points
     objects.selectAll(".dot")
-        .data(data
-              .filter(function(d){
-                  if(isNaN(d.hindfoot_length)){
-                      return false;
-                  }
-                  d.hindfoot_length = parseFloat(d.hindfoot_length);
-                  return true;
-              })
-              .filter(function(d){
-                  if(isNaN(d.weight)){
-                      return false;
-                  }
-                  d.weight = parseFloat(d.weight);
-                  return true;
-              }))
+        .data(data)
         .enter()
         .append("circle")
         .attr("class", "dot")
