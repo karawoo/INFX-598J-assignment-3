@@ -49,7 +49,6 @@ d3.csv("portal_NAs_removed.csv", function(error, data) {
             .orient("left");
 
     // Colors for genera
-    // Source: http://jnnnnn.blogspot.com.au/2015/10/selecting-different-colours-for.html
     var col = d3.scale.category10()
             .domain(["Dipodomys", "Chaetodipus", "Onychomys", "Reithrodontomys",
                       "Peromyscus", "Perognathus", "Neotoma", "Sigmodon",
