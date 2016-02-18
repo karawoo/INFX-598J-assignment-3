@@ -9,7 +9,7 @@ Project Teaching Database. figshare.
 https://dx.doi.org/10.6084/m9.figshare.1314459.v5
 
 The original data (named `portal_combined.csv` in this repository) has been
-filtered (using `portal.R` )to remove rows where weight or hindfoot length
+filtered (using `portal.R`) to remove rows where weight or hindfoot length
 measurements were missing. This significantly reduced the number of species
 present in the data; many of the species that occurred were very rare and always
 had missing data. The filtered data (`portal_NAs_removed.csv`) is what gets used
@@ -22,7 +22,7 @@ http://karawoo.com/INFX-598J-assignment-3/portal.html
 
 Alternatively, download or clone this repository and run
 `python -m SimpleHTTPServer 8888` (on a Mac) from within this directory, then 
-open a browser and navigate to `http://localhost:8888/`.
+open a browser and navigate to `http://localhost:8888/portal.html`.
 
 ## Assignment details
 
